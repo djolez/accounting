@@ -1,0 +1,9 @@
+<div class="col-md-12">
+  <select ng-model="selectedYear" ng-change="getYear(selectedYear)">
+    <<option ng-repeat="year in years" ng-value="year">{{year}}</option>
+  </select>
+
+  <canvas id="bar" class="chart chart-bar"
+    chart-data="values" chart-labels="dates" chart-series="series" chart-options="options" colours="[{fillColor: 'red'}]">
+  </canvas>
+</div>
