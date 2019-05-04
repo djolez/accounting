@@ -1,9 +1,20 @@
 <div class="col-md-12">
-  <select ng-model="selectedYear" ng-change="getYear(selectedYear)">
-    <<option ng-repeat="year in years" ng-value="year">{{year}}</option>
-  </select>
+  <div class=col-md-12>
+    <select ng-model="selectedMonth" ng-change="getByMonth(selectedMonth)" ng-init="getByMonth(selectedMonth)">
+      <option ng-repeat="month in months" ng-value="$index+1">{{month}}</option>
+    </select>
 
-  <canvas id="bar" class="chart chart-bar"
-    chart-data="values" chart-labels="dates" chart-series="series" chart-options="options" colours="[{fillColor: 'red'}]">
-  </canvas>
+    <div class="btn-group">
+      <input type="checkbox" ng-repeat="year in years" ng-value="year" ng-model="year.checked" ng-change="toggleYear(year)">
+    </div>
+  <!-- <select ng-model="selectedChartType" ng-init="selectedChartType='chart-line'">
+    <option ng-value="'chart-line'">Line</option>
+    <option ng-value="'chart-bar'">Bar</option>
+  </select>
+  <span>{{selectedChartType}}</span> -->
+  <div class=col-md-12>
+    <canvas id="bar" class="chart chart-bar"
+      chart-data="data" chart-labels="labels" chart-series="series" chart-options="options" colours="[{fillColor: 'red'}]">
+    </canvas>
+  </div>
 </div>

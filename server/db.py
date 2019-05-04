@@ -11,6 +11,7 @@ class Pazar(Model):
     dow = CharField()
     gotovina = IntegerField()
     kartice = IntegerField()
+    virman = IntegerField()
     reprezentacija_ime = IntegerField()
     reprezentacija_kuca = IntegerField()
     storno = IntegerField()
@@ -20,9 +21,64 @@ class Pazar(Model):
     class Meta:
         database = db
 
+    @classmethod
+    def get_by_month(self, month_no):
+        years = Pazar.select(Pazar.vreme_prometa.year.distinct())
+        result = []
 
-db.connect()
-db.create_tables([Pazar])
+        for year, in years.tuples():
+            monthly_values = {
+                'year': year,
+                'days': (Pazar
+                         .select()
+                         .where((fn.date_part('month', Pazar.vreme_prometa) == month_no) & (fn.date_part('year', Pazar.vreme_prometa) == year)))
+            }
+            result.append(monthly_values)
+            # result[year] = (Pazar
+            #                 .select()
+            #                 .where((fn.date_part('month', Pazar.vreme_prometa) == month_no) & (fn.date_part('year', Pazar.vreme_prometa) == year)))
+        print(result)
+        return result
+        # return (Pazar
+        #         .select()
+        #         .where(fn.date_part('month', Pazar.vreme_prometa) == month_no)
+        #         .group_by(fn.strftime('%Y', Pazar.vreme_prometa)))
+
+    @classmethod
+    def get_by_year(self):
+        # query = (Pazar.select(Pazar.date, fn.Sum(Pazar.ukupno).alias('ukupno_godina'))
+        #          .group_by(fn.strftime('%Y', Pazar.date)))
+
+        query = (Pazar.select(Pazar.vreme_prometa, Pazar.ukupno)
+                 .where(fn.date_part('month', Pazar.vreme_prometa) == 4))
+
+        # query = (Pazar.select(Pazar.vreme_prometa, Pazar.ukupno)
+        #          .where(fn.date_part('year', Pazar.vreme_prometa).between(2017, 2018)))
+
+        # query = (Pazar.select(Pazar.vreme_prometa, Pazar.ukupno)
+        #          .where(Pazar.vreme_prometa.between(datetime(2017, 8, 1), datetime(2018, 8, 1))))
+
+        # query = (Pazar.select(Pazar.vreme_prometa, Pazar.ukupno)
+        #          .where(Pazar.dow == 'Friday'))
+
+        return query
+
+    @property
+    def serialize(self):
+        data = {
+            'vreme_prometa': self.vreme_prometa,
+            'gotovina': self.gotovina,
+            'kartice': self.kartice,
+            'virman': self.virman,
+            'reprezentacija_ime': self.reprezentacija_ime,
+            'reprezentacija_kuca': self.reprezentacija_kuca,
+            'ukupno_promet': self.ukupno_promet,
+            'storno': self.storno,
+            'ukupno': self.ukupno
+        }
+
+        return data
+
 
 DISPLAY_NAMES = [
     'Vreme prometa', 'Gotovina', 'Platne kartice', 'Virman',
@@ -114,26 +170,11 @@ def write_to_db_from_csv(file_name):
     csvFile.close()
 
 
-def get_by_year():
-    # query = (Pazar.select(Pazar.date, fn.Sum(Pazar.ukupno).alias('ukupno_godina'))
-    #          .group_by(fn.strftime('%Y', Pazar.date)))
-
-    query = (Pazar.select(Pazar.vreme_prometa, Pazar.ukupno)
-             .where(fn.date_part('month', Pazar.vreme_prometa) == 4))
-
-    # query = (Pazar.select(Pazar.vreme_prometa, Pazar.ukupno)
-    #          .where(fn.date_part('year', Pazar.vreme_prometa).between(2017, 2018)))
-
-    # query = (Pazar.select(Pazar.vreme_prometa, Pazar.ukupno)
-    #          .where(Pazar.vreme_prometa.between(datetime(2017, 8, 1), datetime(2018, 8, 1))))
-
-    # query = (Pazar.select(Pazar.vreme_prometa, Pazar.ukupno)
-    #          .where(Pazar.dow == 'Friday'))
-
-    for res in query:
-        print(res.vreme_prometa, int(res.ukupno))
+def init_db():
+    with db:
+        db.create_tables([Pazar])
+        write_to_db_from_csv('converted.csv')
 
 
-get_by_year()
-
-# write_to_db_from_csv('converted.csv')
+if __name__ == '__main__':
+    init_db()
