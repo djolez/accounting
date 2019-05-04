@@ -1,9 +1,24 @@
 import db
+import json
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from playhouse.shortcuts import model_to_dict
 
 app = Flask(__name__)
 CORS(app)
+
+
+@app.route('/day/average', methods=['GET'])
+def day_average():
+    month = request.args.get('month', type=int)
+    query = db.Pazar.daily_average_by_month(month)
+    data = []
+    for r in query:
+        tmp = r.serialize
+        tmp['dnevni_prosek'] = r.dnevni_prosek
+        data.append(tmp)
+
+    return jsonify(data)
 
 
 @app.route('/month', methods=['GET'])

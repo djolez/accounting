@@ -3,14 +3,14 @@
     <select ng-model="selectedMonth" ng-change="getByMonth(selectedMonth)" ng-init="getByMonth(selectedMonth)">
       <option ng-repeat="month in months" ng-value="$index+1">{{month}}</option>
     </select>
+    <!-- <select ng-model="selectedMonth" ng-change="getDailyAverage(selectedMonth)" ng-init="getDailyAverage(selectedMonth)">
+      <option ng-repeat="month in months" ng-value="$index+1">{{month}}</option>
+    </select> -->
 
     <div class="btn-group">
       <input type="checkbox" ng-repeat="year in years" ng-value="year" ng-model="year.checked" ng-change="toggleYear(year)">
     </div>
-  <!-- <select ng-model="selectedChartType" ng-init="selectedChartType='chart-line'">
-    <option ng-value="'chart-line'">Line</option>
-    <option ng-value="'chart-bar'">Bar</option>
-  </select>
+    
   <span>{{selectedChartType}}</span> -->
   <div class=col-md-12>
     <canvas id="bar" class="chart chart-bar"

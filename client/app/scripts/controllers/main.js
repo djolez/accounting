@@ -70,6 +70,11 @@ angular.module('chartsApp')
       }
     }
 
+    // $scope.options = {
+    //   responsive: true,
+    //   maintainAspectRatio: false,
+    // }
+
     function getDaysArrayByMonth(month) {
       var daysInMonth = month.daysInMonth();
       var arrDays = [];
@@ -135,12 +140,6 @@ angular.module('chartsApp')
 
               var tmp_data = [];
               var tmp_all_data = [];
-              var add_labels = false;
-
-              if(r.days.length > $scope.labels.length) {
-                $scope.labels = [];
-                add_labels = true;
-              }
 
               r.days.forEach(function(day) {
                 // Put value to the correct position in the array (according to the day of the month)
@@ -163,6 +162,29 @@ angular.module('chartsApp')
             console.log('Series: ', $scope.series, $scope.data, $scope.labels);
             console.log('Labels: ', $scope.labels);
             console.log('Data: ', $scope.data);
+
+            return response;
+        }, function (response) {
+            return response;
+        });
+    }
+
+    $scope.getDailyAverage = function(month) {
+      $http.get("http://localhost:5000/day/average", {'params': {'month': month}})
+        .then(function (response) {
+            $scope.series = [];
+            $scope.data = [];
+            var weekdays = moment.weekdays(true);
+            $scope.labels = weekdays;
+
+            response.data.forEach(function(r) {
+                var dayIndex = weekdays.indexOf(r.dow);
+                $scope.data[dayIndex] = r.dnevni_prosek;
+            });
+
+
+            console.log($scope.data, $scope.labels);
+
 
             return response;
         }, function (response) {

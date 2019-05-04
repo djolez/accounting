@@ -22,6 +22,14 @@ class Pazar(Model):
         database = db
 
     @classmethod
+    def daily_average_by_month(self, month_no):
+
+        return (Pazar
+                .select(Pazar.dow, fn.avg(Pazar.ukupno).alias('dnevni_prosek'))
+                .where((fn.date_part('month', Pazar.vreme_prometa) == month_no))
+                .group_by(Pazar.dow))
+
+    @classmethod
     def get_by_month(self, month_no):
         years = Pazar.select(Pazar.vreme_prometa.year.distinct())
         result = []
@@ -67,6 +75,7 @@ class Pazar(Model):
     def serialize(self):
         data = {
             'vreme_prometa': self.vreme_prometa,
+            'dow': self.dow,
             'gotovina': self.gotovina,
             'kartice': self.kartice,
             'virman': self.virman,
@@ -74,7 +83,8 @@ class Pazar(Model):
             'reprezentacija_kuca': self.reprezentacija_kuca,
             'ukupno_promet': self.ukupno_promet,
             'storno': self.storno,
-            'ukupno': self.ukupno
+            'ukupno': self.ukupno,
+            # 'dnevni_prosek': self.get('dnevni_prosek')
         }
 
         return data
@@ -173,6 +183,7 @@ def write_to_db_from_csv(file_name):
 def init_db():
     with db:
         db.create_tables([Pazar])
+        write_to_db_from_csv('staro.csv')
         write_to_db_from_csv('converted.csv')
 
 
