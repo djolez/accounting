@@ -47,6 +47,11 @@ angular.module('chartsApp')
           }
         }]
       },
+      elements: {
+        line: {
+          fill: false
+        }
+      },
       tooltips: {
         mode: 'index',
         intersect: false,

@@ -10,10 +10,10 @@
     <div class="btn-group">
       <input type="checkbox" ng-repeat="year in years" ng-value="year" ng-model="year.checked" ng-change="toggleYear(year)">
     </div>
-    
+
   <span>{{selectedChartType}}</span> -->
   <div class=col-md-12>
-    <canvas id="bar" class="chart chart-bar"
+    <canvas id="bar" class="chart chart-line"
       chart-data="data" chart-labels="labels" chart-series="series" chart-options="options" colours="[{fillColor: 'red'}]">
     </canvas>
   </div>
