@@ -40,7 +40,7 @@ class Pazar(Model):
                 'days': (Pazar
                          .select()
                          .where((fn.date_part('month', Pazar.vreme_prometa) == month_no) & (fn.date_part('year', Pazar.vreme_prometa) == year)))
-            }
+                }
             result.append(monthly_values)
             # result[year] = (Pazar
             #                 .select()
@@ -85,7 +85,7 @@ class Pazar(Model):
             'storno': self.storno,
             'ukupno': self.ukupno,
             # 'dnevni_prosek': self.get('dnevni_prosek')
-        }
+            }
 
         return data
 
@@ -174,7 +174,7 @@ def write_to_db_from_csv(file_name):
                 ukupno_promet=row[DB_FIELD_INDEX['ukupno_promet']],
                 storno=row[DB_FIELD_INDEX['storno']],
                 ukupno=row[DB_FIELD_INDEX['ukupno']]
-            )
+                )
             new.save()
 
     csvFile.close()
@@ -183,8 +183,9 @@ def write_to_db_from_csv(file_name):
 def init_db():
     with db:
         db.create_tables([Pazar])
-        write_to_db_from_csv('staro.csv')
-        write_to_db_from_csv('converted.csv')
+        # write_to_db_from_csv('staro.csv')
+        # write_to_db_from_csv('converted.csv')
+        write_to_db_from_csv('out.csv')
 
 
 if __name__ == '__main__':
